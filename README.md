@@ -1,11 +1,11 @@
 # Sandstorm.takistan
 
 Insurgency style mission for Takistan, complete with all the tools you need for a full MILSIM experience.
-This is the 1st edition of the mission and is a WIP, a unique experience. This mission is designed for a multiplayer environment, however you can also enjoy it in single player. I hope you enjoy it as much as I do. 
+This is the 1st edition of the mission and is a WIP, a unique experience. This mission is designed for a multiplayer environment, however you can also enjoy it in single player. I hope you enjoy it as much as I do.
 
-Steam Link 
+Steam Link
 
-To play this mission no addons are required. The mission is compatible with addons.
+To play this mission the following addons are required; ACE, CUP Terrains, Maps, Weapons, Units. CBA_A3. The mission is compatible with all other addons.
 
 To begin using the Software;
 
@@ -19,4 +19,3 @@ The Software is distributed without any warranty; without even the implied warra
 This mission is (c) 2018 RCANTEC(RyanD) www.rytechlab.com rights reserved.
 Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)
 https://creativecommons.org/licenses/by-nc-nd/4.0/
-
