@@ -1,70 +1,60 @@
 if (CHVD_keyDown) exitWith {};
 CHVD_keyDown = true;
 
-private ["_vehTypeString"];
-_updateType = [_this, 0, 0, [0]] call BIS_fnc_param; // 0 - decrease VD, 1 - increase VD
-_updateValue = if (_updateType isEqualTo 0) then {-500} else {500};
+params [["_updateType", 0, []]];// 0 - decrease VD, 1 - increase VD
+private _updateValue = if (_updateType isEqualTo 0) then {-500} else {500};
 
 if (!isNull (findDisplay 2900)) then {call CHVD_fnc_openDialog};
 
-switch (CHVD_vehType) do {
-	case 1: {
-		_vehTypeString = "car";
-	};
-	case 2: {
-		_vehTypeString = "air";
-	};
-	default {
-		_vehTypeString = "foot";
-	};
-};
+private _vehTypeString = ["foot", "car", "air"] param [CHVD_vehType, "foot"];
 
-_updateMode = call compile ("CHVD_" + _vehTypeString + "SyncMode");
-_viewDistVar = "CHVD_" + _vehTypeString;
-_viewDist = call compile _viewDistVar;
-_objViewDistVar = "CHVD_" + _vehTypeString + "Obj";
-_objViewDist = call compile _objViewDistVar;
-_vdDiff = _viewDist - _objViewDist;
+private _updateMode = missionNamespace getVariable ("CHVD_" + _vehTypeString + "SyncMode");
+private _viewDistVar = "CHVD_" + _vehTypeString;
+private _viewDist = missionNamespace getVariable _viewDistVar;
+private _objViewDistVar = "CHVD_" + _vehTypeString + "Obj";
+private _objViewDist = missionNamespace getVariable _objViewDistVar;
+private _vdDiff = _viewDist - _objViewDist;
 
 switch (_updateMode) do {
 	case 1: {
-		_viewDistValue = _viewDist + _updateValue min CHVD_maxView max 500;		
+		private _viewDistValue = _viewDist + _updateValue min CHVD_maxView max 500;		
 		
-		_percentVar = "CHVD_" + _vehTypeString + "SyncPercentage";
-		_percentValue = call compile _percentVar;
+		private _percentVar = "CHVD_" + _vehTypeString + "SyncPercentage";
+		private _percentValue = missionNamespace getVariable _percentVar;
 		
-		_objViewDistValue = _viewDistValue * _percentValue min CHVD_maxObj;
+		private _objViewDistValue = _viewDistValue * _percentValue min CHVD_maxObj;
 		
 		if (_objViewDistValue >= 500) then {
-			call compile format ["%1 = %2", _viewDistVar, _viewDistValue];
-			call compile format ["profileNamespace setVariable ['%1',%1]", _viewDistVar];
-			call compile format ["%1 = %2", _objViewDistVar, _objViewDistValue];
-			call compile format ["profileNamespace setVariable ['%1',%1]", _objViewDistVar];
+			missionNamespace setVariable [_viewDistVar, _viewDistValue];
+			profileNamespace setVariable [str _viewDistVar, _viewDistVar];
+
+			missionNamespace setVariable [_objViewDistVar, _objViewDistValue];
+			profileNamespace setVariable [str _objViewDistVar, _objViewDistVar];
 			
 			[3] call CHVD_fnc_updateSettings;
 		};
 	};
 	case 2: {		
-		_objViewDistValue = _objViewDist + _updateValue min _viewDist min CHVD_maxObj max 500;
-		call compile format ["%1 = %2", _objViewDistVar, _objViewDistValue];
-		call compile format ["profileNamespace setVariable ['%1',%1]", _objViewDistVar];
+		private _objViewDistValue = _objViewDist + _updateValue min _viewDist min CHVD_maxObj max 500;
+		missionNamespace setVariable [_objViewDistVar, _objViewDistValue];
+		profileNamespace setVariable [str _objViewDistVar, _objViewDistVar];
 		
 		[4] call CHVD_fnc_updateSettings;
 	};
 	default {
-		_viewDistValue = _viewDist + _updateValue min CHVD_maxView max (500 + _vdDiff);
-		_objViewDistValue = _objViewDist + _updateValue min (_viewDistValue - _vdDiff) min CHVD_maxObj max 500;
-		call compile format ["%1 = %2", _viewDistVar, _viewDistValue];
-		call compile format ["profileNamespace setVariable ['%1',%1]", _viewDistVar];
+		private _viewDistValue = _viewDist + _updateValue min CHVD_maxView max (500 + _vdDiff);
+		private _objViewDistValue = _objViewDist + _updateValue min (_viewDistValue - _vdDiff) min CHVD_maxObj max 500;
+		missionNamespace setVariable [_viewDistVar, _viewDistValue];
+		profileNamespace setVariable [str _viewDistVar, _viewDistVar];
 		
-		call compile format ["%1 = %2", _objViewDistVar, _objViewDistValue];
-		call compile format ["profileNamespace setVariable ['%1',%1]", _objViewDistVar];
+		missionNamespace setVariable [_objViewDistVar, _objViewDistValue];
+		profileNamespace setVariable [str _objViewDistVar, _objViewDistVar];
 				
 		[3] call CHVD_fnc_updateSettings;	
 	};
 };
 
-_vdString = "";
+private _vdString = "";
 for "_i" from 1 to (35) step 1 do {
 	if ((call compile _viewDistVar) < CHVD_maxView / 35 * _i) then {
 		_vdString = _vdString + "·";
@@ -73,7 +63,7 @@ for "_i" from 1 to (35) step 1 do {
 	};
 };
 
-_ovdString = "";
+private _ovdString = "";
 for "_i" from 1 to (35) step 1 do {
 	if ((call compile _objViewDistVar) < CHVD_maxObj / 35 * _i) then {
 		_ovdString = _ovdString + "·";
@@ -82,8 +72,8 @@ for "_i" from 1 to (35) step 1 do {
 	};
 };
 
-_textViewDistance = if (isLocalized "STR_chvd_viewDistance") then {localize "STR_chvd_viewDistance"} else {"View Distance"};
-_textObjViewDistance = if (isLocalized "STR_chvd_objViewDistance") then {localize "STR_chvd_objViewDistance"} else {"View Distance"};
+private _textViewDistance = if (isLocalized "STR_chvd_viewDistance") then {localize "STR_chvd_viewDistance"} else {"View Distance"};
+private _textObjViewDistance = if (isLocalized "STR_chvd_objViewDistance") then {localize "STR_chvd_objViewDistance"} else {"View Distance"};
 
 hintSilent parseText format ["<t align='left' size='1.33'>
 %2:	<t align='right'>%3</t>

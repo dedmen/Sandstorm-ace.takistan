@@ -15,9 +15,7 @@ _decTerrainKey = ["CH View Distance", "dec_terrain_quality", _textDecreaseTerrai
 _textIncreaseTerrain = if (isLocalized "STR_chvd_increaseTerrain") then {localize "STR_chvd_increaseTerrain"} else {"Increase terrain quality"};
 _incTerrainKey = ["CH View Distance", "inc_terrain_quality", _textIncreaseTerrain, {[1] call CHVD_fnc_keyDownTerrain}, "", [DIK_RBRACKET, [true, false, false]], true] call CBA_fnc_addKeybind;
 
-_useShift = _openSettingsKey select 1 select 0;
-_useCtrl = _openSettingsKey select 1 select 1;
-_useAlt = _openSettingsKey select 1 select 2;
+(_openSettingsKey select 1) params ["_useShift", "_useCtrl", "_useAlt"];
 
 _SCAstring = (if (_useShift) then {"Shift + "} else {""}) + (if (_useCtrl) then {"Ctrl + "} else {""}) + (if (_useAlt) then {"Alt + "} else {""});
 

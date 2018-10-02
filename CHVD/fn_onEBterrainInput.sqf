@@ -1,9 +1,10 @@
-private ["_textValue"];
-_varType = [_this, 0, "", [""]] call BIS_fnc_param;
-_textCtrl = [_this, 1, controlNull, [0, controlNull]] call BIS_fnc_param;
-_listbox = [_this, 2, controlNull, [0, controlNull]] call BIS_fnc_param;
+params [
+	["_varType", "", [""]],
+	["_textCtrl", controlNull, [0, controlNull]],
+	["_listbox", controlNull, [0, controlNull]]
+];
 
-_textValue = [ctrlText _textCtrl, "0123456789."] call BIS_fnc_filterString;
+private _textValue = [ctrlText _textCtrl, "0123456789."] call BIS_fnc_filterString;
 _textValue = if (_textValue == "") then {50} else {call compile _textValue min 50 max 3.125};
 
 
@@ -12,7 +13,7 @@ if (!CHVD_allowNoGrass) then {
 };
 
 //update listbox
-_listboxCtrl = (finddisplay 2900) displayCtrl _listbox;
+private _listboxCtrl = (finddisplay 2900) displayCtrl _listbox;
 //remove EH not to cause huge lag
 _listboxCtrl ctrlRemoveAllEventHandlers "LBSelChanged";
 _sel = [_textValue] call CHVD_fnc_selTerrainQuality;
@@ -27,7 +28,7 @@ _listboxCtrl ctrlSetEventHandler ["LBSelChanged",
 ];
 
 //ctrlSetText [_textCtrl, str _textValue];	
-call compile format ["%1 = %2",_varType, _textValue];
-call compile format ["profileNamespace setVariable ['%1',%1]", _varType];
+missionNamespace setVariable [_varType, _textValue];
+profileNamespace setVariable [str _varType, _varType];
 
 [] call CHVD_fnc_updateTerrain;

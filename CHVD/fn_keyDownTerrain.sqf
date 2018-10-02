@@ -1,28 +1,27 @@
 if (CHVD_keyDown) exitWith {};
 CHVD_keyDown = true;
 
-private ["_vehTypeString"];
-_updateType = [_this, 0, 0, [0]] call BIS_fnc_param; 
+params [["_updateType", 0, []]];
 if (_updateType isEqualTo 0) exitWith {};
-_terrainGridArray = [50, 48.99, 25, 12.5, 3.125];
+private _terrainGridArray = [50, 48.99, 25, 12.5, 3.125];
 
 if (!isNull (findDisplay 2900)) then {call CHVD_fnc_openDialog};
 
-switch (CHVD_vehType) do {
+private _vehTypeString = switch (CHVD_vehType) do {
 	case 1: {
-		_vehTypeString = "car";
+		"car";
 	};
 	case 2: {
-		_vehTypeString = "air";
+		"air";
 	};
 	default {
-		_vehTypeString = "foot";
+		"foot";
 	};
 };
 
-_terrainGridVar = "CHVD_" + _vehTypeString + "Terrain";
-_terrainGrid = call compile _terrainGridVar;
-_terrainIndex = switch (true) do {
+private _terrainGridVar = "CHVD_" + _vehTypeString + "Terrain";
+private _terrainGrid = missionNamespace getVariable _terrainGridVar;
+private _terrainIndex = switch (true) do {
 	case (_terrainGrid >= 49): {0};
 	case (_terrainGrid >= 48.99): {1};
 	case (_terrainGrid >= 25): {2};
@@ -38,12 +37,12 @@ if (!CHVD_allowNoGrass) then {
 	_terrainGrid = _terrainGrid min 48.99;
 };
 
-call compile format ["%1 = %2", _terrainGridVar, _terrainGrid];
-call compile format ["profileNamespace setVariable ['%1',%1]", _terrainGridVar];
+missionNamespace setVariable [_terrainGridVar, _terrainGrid];
+profileNamespace setVariable [str _terrainGridVar, _terrainGridVar];
 
 call CHVD_fnc_updateTerrain;
 
-_terrainString = "";
+private _terrainString = "";
 for "_i" from (37.125) to 3.125 step -1 do {
 	if (round ((sqrt _terrainGrid) * 10) -18  >= 53 / 37.125 * _i) then {
 		_terrainString = _terrainString + "·";
@@ -52,16 +51,16 @@ for "_i" from (37.125) to 3.125 step -1 do {
 	};
 };
 
-_terrainQualityArray = [
+private _terrainQualityArray = [
 	["Low", localize "STR_chvd_low"] select (isLocalized "STR_chvd_low"),
 	["Standart", localize "STR_chvd_standard"] select (isLocalized "STR_chvd_standard"),
 	["High", localize "STR_chvd_high"] select (isLocalized "STR_chvd_high"),
 	["Very High", localize "STR_chvd_veryHigh"] select (isLocalized "STR_chvd_veryHigh"),
 	["Ultra", localize "STR_chvd_ultra"] select (isLocalized "STR_chvd_ultra")
 ];
-_terrainQuality = _terrainQualityArray select _terrainIndex;
-_textTerrainQuality = if (isLocalized "STR_chvd_terrainQuality") then {localize "STR_chvd_terrainQuality"} else {"Terrain Quality"};
-_textTerrainGrid = if (isLocalized "STR_chvd_terrainGrid") then {localize "STR_chvd_terrainGrid"} else {"Terrain Grid"};
+private _terrainQuality = _terrainQualityArray select _terrainIndex;
+private _textTerrainQuality = if (isLocalized "STR_chvd_terrainQuality") then {localize "STR_chvd_terrainQuality"} else {"Terrain Quality"};
+private _textTerrainGrid = if (isLocalized "STR_chvd_terrainGrid") then {localize "STR_chvd_terrainGrid"} else {"Terrain Grid"};
 
 hintSilent parseText format ["<t align='left' size='1.33'>
 %2: <t align='right'>%3</t>
